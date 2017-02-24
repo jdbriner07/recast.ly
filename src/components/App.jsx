@@ -2,7 +2,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoPlaying: exampleVideoData[0]
+      videoPlaying: videoInit[0],
+      videoList: videoInit
     };
     this.playVideo = this.playVideo.bind(this);
   }
@@ -13,14 +14,34 @@ class App extends React.Component {
     });
   }
 
+  componentDidMount() {
+    console.log('mounted');
+    this.youtubeSearch('smoothiethecat');
+  }
+
+  youtubeSearch(query) {
+    var options = {
+      query: query, 
+      key: window.YOUTUBE_API_KEY, 
+      max: 5
+    };
+
+    this.props.searchYouTube(options, (videos) => {
+      this.setState ({
+        videoPlaying: videos[0],
+        videoList: videos
+      });
+    });
+  }
+ 
   render() {
     return (<div>
-      <Nav />
-      <div className="col-md-7">
+      <Nav handleSearchChange={this.youtubeSearch.bind(this)}/>
+      <div className="col-md-7">;
         <VideoPlayer video={this.state.videoPlaying}/>
       </div>
       <div className="col-md-5">
-        <VideoList videos={exampleVideoData} playVideo={this.playVideo}/>
+        <VideoList videos={this.state.videoList} playVideo={this.playVideo}/>
       </div>
     </div>);
   }
@@ -29,3 +50,38 @@ class App extends React.Component {
 // `var` declarations will only exist globally where explicitly defined
 window.App = App;
 // window.video = exampleVideoData[0];
+
+
+var videoInit = [{
+  kind: '',
+  etag: '',
+  id: {
+    kind: '',
+    videoId: ''
+  },
+  snippet: {
+    publishedAt: '',
+    channelId: '',
+    title: '',
+    description: '',
+    thumbnails: {
+      default: {
+        url: '',
+        width: 0,
+        height: 0
+      },
+      medium: {
+        url: '',
+        width: 0,
+        height: 0
+      },
+      high: {
+        url: '',
+        width: 0,
+        height: 0
+      }
+    },
+    channelTitle: '',
+    liveBroadcastContent: ''
+  }
+}];
